@@ -26,6 +26,6 @@ public class RabbitConfig {
 
     @Bean
     public Queue addressBookQueue() {
-        return new Queue(RabbitQueueEnum.ADDRESS_BOOK.getName());
+        return new Queue(RabbitQueueEnum.CONTACT.getName());
     }
 }
