@@ -25,7 +25,7 @@ public enum RabbitQueueEnum {
     /**
      * 审批
      */
-    ADDRESS_BOOK("addressBook", "通讯录");
+    CONTACT("contact", "通讯录");
 
     private String name;
 
