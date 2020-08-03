@@ -23,19 +23,19 @@ public class Item implements Serializable {
     private String name;
 
     /**
-     *
+     * 扩展属性类型: 0-本文 1-网页
      */
     @XStreamAlias("Type")
     private String type;
 
     /**
-     *
+     * 文本属性类型
      */
     @XStreamAlias("Text")
     private ItemText text;
 
     /**
-     *
+     * 网页类型属性
      */
     @XStreamAlias("Web")
     private ItemWeb web;

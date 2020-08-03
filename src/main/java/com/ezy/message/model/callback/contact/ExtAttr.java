@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author Caixiaowei
  * @ClassName ExtAttr.java
- * @Description TODO
+ * @Description 扩展属性
  * @createTime 2020年08月03日 14:15:00
  */
 @Data
