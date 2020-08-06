@@ -31,7 +31,7 @@ public class Consumer {
             String json = new String(message.getBody());
 //            JSONObject jsonObject = JSONObject.fromObject(json);
             log.info("消息了【】handleMessage" +  json);
-            int i = 1/0;
+//            int i = 1/0;
             //业务处理。
             /**
              * 防止重复消费，可以根据传过来的唯一ID先判断缓存数据中是否有数据
