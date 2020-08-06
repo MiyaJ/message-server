@@ -24,4 +24,16 @@ public class RabbitController {
         producer.send();
         return "sucess";
     }
+
+    @GetMapping("/sendTest")
+    public Object send(String queue, String content) {
+        producer.send(queue, content);
+        return "sucess";
+    }
+
+    @GetMapping("/sendMessage")
+    public Object send(String message) {
+        producer.sendMessage(message);
+        return "sucess";
+    }
 }

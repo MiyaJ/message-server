@@ -1,6 +1,8 @@
 package com.ezy.message.reception;
 
-import org.springframework.amqp.core.AmqpTemplate;
+import com.ezy.message.config.RabbitConfig;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +17,9 @@ import java.util.Date;
 @Component
 public class Producer {
 
+
     @Autowired
-    private AmqpTemplate rabbitTemplate;
+    private RabbitTemplate rabbitTemplate;
 
     public void send() {
         String context = "hello " + new Date();
@@ -35,5 +38,12 @@ public class Producer {
      */
     public void send(String queue, String context) {
         this.rabbitTemplate.convertAndSend(queue, context);
+    }
+
+    public void  sendMessage(String message){
+        CorrelationData correlationData = new CorrelationData("111");
+
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_APPROVAL, RabbitConfig.ROUTING_KEY_APPROVAL, message,
+                correlationData);
     }
 }
