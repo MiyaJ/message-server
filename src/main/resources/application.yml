@@ -49,3 +49,17 @@ mybatis-plus:
     jdbc-type-for-null: null
   global-config:
     banner: false
+
+# 企业微信配置
+qywx:
+  corpid: wwc5057e76805fa8ac
+  # 审批应用配置
+  approval:
+    token: g1R61FGM2Mwu4
+    encodingAESKey: aZ9YOYunyT3k5R2Jytmlt5gprYWqKS7GJk4XJO9lgiC
+    secret: LSyEMX6zvBMbHavKEdYdkBWg-qNQec6wE_2zkxu_knM
+  # 通讯录配置
+  contact:
+    token: M1RLARS2GU2SIBMpDpHjcLAqIpYG
+    encodingAESKey: geBPODBuj8efqpgkw3VcYYntja8b45JtMkNfQs7Hxjs
+    secret: E7LtKs9reVetlMyk1yYOrXvYQaKM4vLV0eEtX5FoZvo
