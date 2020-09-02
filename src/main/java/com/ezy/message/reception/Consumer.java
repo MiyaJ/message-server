@@ -30,7 +30,7 @@ public class Consumer {
         try {
             String json = new String(message.getBody());
 //            JSONObject jsonObject = JSONObject.fromObject(json);
-            log.info("消息了【】handleMessage" +  json);
+            log.info("handleMessage 消费了消息: {}",  json);
 //            int i = 1/0;
             //业务处理。
             /**
@@ -43,7 +43,7 @@ public class Consumer {
             //手动应答
             channel.basicAck(message.getMessageProperties().getDeliveryTag(),false);
         }catch (Exception e){
-            log.error("消费消息失败了【】error："+ message.getBody());
+            log.error("handleMessage 消费消息失败了 error: {}"+ message.getBody());
             log.error("OrderConsumer  handleMessage {} , error:",message,e);
             // 处理消息失败，将消息重新放回队列
             channel.basicNack(message.getMessageProperties().getDeliveryTag(), false,true);

@@ -1,5 +1,6 @@
 package com.ezy.message.controller;
 
+import cn.hutool.http.Method;
 import com.alibaba.fastjson.JSONObject;
 import com.ezy.message.common.RabbitQueueEnum;
 import com.ezy.message.model.callback.approval.ApprovalInfo;
@@ -58,7 +59,7 @@ public class CallBackController {
      * @return 
      */
     @RequestMapping("/approval")
-    public String approval(HttpServletRequest request, HttpServletResponse response) {
+    public String approval(HttpServletRequest request) {
 
         String msgSig = request.getParameter("msg_signature");
         String timeStamp = request.getParameter("timestamp");
@@ -66,15 +67,15 @@ public class CallBackController {
         String echostr = request.getParameter("echostr");
         log.info("msgSig:"+msgSig+"======timeStamp:"+timeStamp+"=====nonce:"+nonce+"=====echostr:"+echostr);
         try {
-            if ("get".equalsIgnoreCase(request.getMethod())){
-                WXBizMsgCrypt wxcpt = wxcpt(APPROVAL_TOKEN, APPROVAL_ENCODING_AES_KEY);
+            WXBizMsgCrypt wxcpt = wxcpt(APPROVAL_TOKEN, APPROVAL_ENCODING_AES_KEY);
+            if (Method.GET.name().equalsIgnoreCase(request.getMethod())){
                 //需要返回的明文
                 String sEchoStr;
                 sEchoStr = wxcpt.VerifyURL(msgSig, timeStamp, nonce, echostr);
                 return sEchoStr;
 
             }else{
-                WXBizMsgCrypt wxcpt = wxcpt(APPROVAL_TOKEN, APPROVAL_ENCODING_AES_KEY);
+
                 String data = QywxCallBackUtils.getStringInputstream(request);
                 log.info("post请求数据: {}", data);
                 String content = wxcpt.DecryptMsg(msgSig,timeStamp,nonce,data);
@@ -108,7 +109,7 @@ public class CallBackController {
      * @return
      */
     @RequestMapping("/contact")
-    public String contact(HttpServletRequest request, HttpServletResponse response) {
+    public String contact(HttpServletRequest request) {
 
         String msgSig = request.getParameter("msg_signature");
         String timeStamp = request.getParameter("timestamp");
@@ -116,15 +117,15 @@ public class CallBackController {
         String echostr = request.getParameter("echostr");
         log.info("msgSig:"+msgSig+"======timeStamp:"+timeStamp+"=====nonce:"+nonce+"=====echostr:"+echostr);
         try {
-            if ("get".equalsIgnoreCase(request.getMethod())){
-                WXBizMsgCrypt wxcpt = wxcpt(CONTACT_TOKEN, CONTACT_ENCODING_AES_KEY);
+            WXBizMsgCrypt wxcpt = wxcpt(CONTACT_TOKEN, CONTACT_ENCODING_AES_KEY);
+            if (Method.GET.name().equalsIgnoreCase(request.getMethod())){
+
                 //需要返回的明文
                 String sEchoStr;
                 sEchoStr = wxcpt.VerifyURL(msgSig, timeStamp, nonce, echostr);
                 return sEchoStr;
 
             }else{
-                WXBizMsgCrypt wxcpt = wxcpt(CONTACT_TOKEN, CONTACT_ENCODING_AES_KEY);
                 String data = QywxCallBackUtils.getStringInputstream(request);
                 log.info("post请求数据: {}", data);
                 String content = wxcpt.DecryptMsg(msgSig,timeStamp,nonce,data);
@@ -157,4 +158,5 @@ public class CallBackController {
         }
         return wxcpt;
     }
+
 }

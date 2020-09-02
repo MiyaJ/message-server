@@ -23,6 +23,10 @@ public class RabbitConfig {
     public static final String EXCHANGE_CONTACT = "EXCHANGE_CONTACT";
     public static final String EXCHANGE_HELLO = "EXCHANGE_HELLO";
 
+    public static final String TYPE_APPROVAL="APPROVAL";
+    public static final String TYPE_CONTACT="CONTACT";
+    public static final String TYPE_HELLO="HELLO";
+
     public static final String QUEUE_APPROVAL="QUEUE_APPROVAL";
     public static final String QUEUE_CONTACT="QUEUE_CONTACT";
     public static final String QUEUE_HELLO="QUEUE_HELLO";
