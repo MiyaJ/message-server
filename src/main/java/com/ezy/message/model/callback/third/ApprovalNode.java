@@ -1,4 +1,4 @@
-package com.ezy.message.model.callback.approval.third;
+package com.ezy.message.model.callback.third;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import lombok.Data;

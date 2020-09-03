@@ -1,15 +1,12 @@
 package com.ezy.message.utils.aes;
 
 /**
- * Created with IntelliJ IDEA.
- *
- * @author: jinweiwei
- * @date: 2019/6/19
- * Time: 15:29
- * To change this template use File | Settings | File Templates.
- * Description:
+ * @author Caixiaowei
+ * @ClassName aa
+ * @Description
+ * @createTime 2020/9/3$ 15:45$
  */
-public class AesExceptions extends Exception{
+public class AesException extends Exception {
 
     public final static int OK = 0;
     public final static int ValidateSignatureError = -40001;
@@ -20,7 +17,9 @@ public class AesExceptions extends Exception{
     public final static int EncryptAESError = -40006;
     public final static int DecryptAESError = -40007;
     public final static int IllegalBuffer = -40008;
-    private static final long serialVersionUID = 2540286773018323959L;
+    //public final static int EncodeBase64Error = -40009;
+    //public final static int DecodeBase64Error = -40010;
+    //public final static int GenReturnXmlError = -40011;
 
     private int code;
 
@@ -42,6 +41,12 @@ public class AesExceptions extends Exception{
                 return "aes解密失败";
             case IllegalBuffer:
                 return "解密后得到的buffer非法";
+//		case EncodeBase64Error:
+//			return "base64加密错误";
+//		case DecodeBase64Error:
+//			return "base64解密错误";
+//		case GenReturnXmlError:
+//			return "xml生成失败";
             default:
                 return null; // cannot be
         }
@@ -51,8 +56,9 @@ public class AesExceptions extends Exception{
         return code;
     }
 
-    AesExceptions(int code) {
+    AesException(int code) {
         super(getMessage(code));
         this.code = code;
     }
+
 }

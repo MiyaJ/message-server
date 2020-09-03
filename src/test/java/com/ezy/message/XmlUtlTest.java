@@ -1,6 +1,7 @@
 package com.ezy.message;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ezy.message.model.callback.approval.*;
 import com.ezy.message.model.callback.contact.Contact;
 import com.ezy.message.model.callback.contact.ExtAttr;
 import com.ezy.message.model.callback.contact.Item;
@@ -221,5 +222,20 @@ public class XmlUtlTest {
         xstream.processAnnotations(new Class[]{Contact.class, ExtAttr.class, Item.class, ItemText.class});
         Contact contact = (Contact) xstream.fromXML(this.update_tag);
         log.info("update_tag: {}", JSONObject.toJSONString(contact));
+    }
+
+    private String approvalMsg = "<xml><ToUserName><![CDATA[wwc5057e76805fa8ac]]></ToUserName><FromUserName><![CDATA[sys]]></FromUserName><CreateTime>1599120959</CreateTime><MsgType><![CDATA[event]]></MsgType><Event><![CDATA[sys_approval_change]]></Event><AgentID>3010040</AgentID><ApprovalInfo><SpNo>202009030004</SpNo><SpName><![CDATA[测试]]></SpName><SpStatus>1</SpStatus><TemplateId><![CDATA[Bs7wRUBt1HhUXNvP3hVCmxBUqZrEyo2XnLakE3XFJ]]></TemplateId><ApplyTime>1599120959</ApplyTime><Applyer><UserId><![CDATA[cxw0615]]></UserId><Party><![CDATA[2]]></Party></Applyer><SpRecord><SpStatus>1</SpStatus><ApproverAttr>1</ApproverAttr><Details><Approver><UserId><![CDATA[TianQin]]></UserId></Approver><Speech><![CDATA[]]></Speech><SpStatus>1</SpStatus><SpTime>0</SpTime></Details></SpRecord><SpRecord><SpStatus>1</SpStatus><ApproverAttr>1</ApproverAttr><Details><Approver><UserId><![CDATA[zcl0615]]></UserId></Approver><Speech><![CDATA[]]></Speech><SpStatus>1</SpStatus><SpTime>0</SpTime></Details></SpRecord><Notifyer><UserId><![CDATA[zcl0615]]></UserId></Notifyer><Notifyer><UserId><![CDATA[TianQin]]></UserId></Notifyer><StatuChangeEvent>1</StatuChangeEvent></ApprovalInfo></xml>";
+
+    public void test_approval() {
+        XStream xstream = new XStream();
+        xstream.ignoreUnknownElements();
+        xstream.autodetectAnnotations(true);
+        //使用注解修改对象名称
+        xstream.processAnnotations(new Class[]{Applyer.class, ApprovalInfo.class, Comments.class,
+                CommentUserInfo.class, Details.class, Notifyer.class, SpRecord.class,
+                ApprovalStatuChangeEvent.class});
+        ApprovalStatuChangeEvent callbackMessage = (ApprovalStatuChangeEvent) xstream.fromXML(approvalMsg);
+
+        log.info("testXml: {}", JSONObject.toJSONString(callbackMessage));
     }
 }

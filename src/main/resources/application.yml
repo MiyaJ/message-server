@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8881
 spring:
   application:
     name: ezy-reception
@@ -55,8 +55,8 @@ qywx:
   corpid: wwc5057e76805fa8ac
   # 审批应用配置
   approval:
-    token: g1R61FGM2Mwu4
-    encodingAESKey: aZ9YOYunyT3k5R2Jytmlt5gprYWqKS7GJk4XJO9lgiC
+    token: taT2xL4gMuv3eWFTRr
+    encodingAESKey: UoqFEy9YAOa15NxO7yGbPj6v4ODLvxpdPaK8E8LTBuO
     secret: LSyEMX6zvBMbHavKEdYdkBWg-qNQec6wE_2zkxu_knM
   # 通讯录配置
   contact:

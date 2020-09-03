@@ -25,9 +25,9 @@ class SHA1 {
 	 * @param nonce 随机字符串
 	 * @param encrypt 密文
 	 * @return 安全签名
-	 * @throws AesExceptions 
+	 * @throws AesException 
 	 */
-	public static String getSHA1(String token, String timestamp, String nonce, String encrypt) throws AesExceptions
+	public static String getSHA1(String token, String timestamp, String nonce, String encrypt) throws AesException
 			  {
 		try {
 			String[] array = new String[] { token, timestamp, nonce, encrypt };
@@ -55,7 +55,7 @@ class SHA1 {
 			return hexstr.toString();
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new AesExceptions(AesExceptions.ComputeSignatureError);
+			throw new AesException(AesException.ComputeSignatureError);
 		}
 	}
 }
