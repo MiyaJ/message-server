@@ -2,7 +2,7 @@ package com.ezy.message.controller;
 
 import cn.hutool.http.Method;
 import com.alibaba.fastjson.JSONObject;
-import com.ezy.message.common.RabbitQueueEnum;
+import com.ezy.message.config.RabbitConfig;
 import com.ezy.message.model.callback.QwEvent;
 import com.ezy.message.model.callback.approval.*;
 import com.ezy.message.model.callback.contact.Contact;
@@ -49,9 +49,6 @@ public class CallBackController {
     private String CONTACT_SECRET;
     @Value("${qywx.corpid}")
     private String corpid;
-
-    private static String approvalMsg = "<xml><ToUserName><![CDATA[wwc5057e76805fa8ac]]></ToUserName><FromUserName><![CDATA[sys]]></FromUserName><CreateTime>1599120959</CreateTime><MsgType><![CDATA[event]]></MsgType><Event><![CDATA[sys_approval_change]]></Event><AgentID>3010040</AgentID><ApprovalInfo><SpNo>202009030004</SpNo><SpName><![CDATA[测试]]></SpName><SpStatus>1</SpStatus><TemplateId><![CDATA[Bs7wRUBt1HhUXNvP3hVCmxBUqZrEyo2XnLakE3XFJ]]></TemplateId><ApplyTime>1599120959</ApplyTime><Applyer><UserId><![CDATA[cxw0615]]></UserId><Party><![CDATA[2]]></Party></Applyer><SpRecord><SpStatus>1</SpStatus><ApproverAttr>1</ApproverAttr><Details><Approver><UserId><![CDATA[TianQin]]></UserId></Approver><Speech><![CDATA[]]></Speech><SpStatus>1</SpStatus><SpTime>0</SpTime></Details></SpRecord><SpRecord><SpStatus>1</SpStatus><ApproverAttr>1</ApproverAttr><Details><Approver><UserId><![CDATA[zcl0615]]></UserId></Approver><Speech><![CDATA[]]></Speech><SpStatus>1</SpStatus><SpTime>0</SpTime></Details></SpRecord><Notifyer><UserId><![CDATA[zcl0615]]></UserId></Notifyer><Notifyer><UserId><![CDATA[TianQin]]></UserId></Notifyer><StatuChangeEvent>1</StatuChangeEvent></ApprovalInfo></xml>";
-
 
     /**
      * 审批状态变更回调通知
@@ -106,10 +103,10 @@ public class CallBackController {
                     xstream.processAnnotations(new Class[]{Applyer.class, ApprovalInfo.class, Comments.class,
                             CommentUserInfo.class, Details.class, Notifyer.class, SpRecord.class,
                             ApprovalStatuChangeEvent.class});
-                    ApprovalStatuChangeEvent callbackMessage = (ApprovalStatuChangeEvent) xstream.fromXML(approvalMsg);
+                    ApprovalStatuChangeEvent callbackMessage = (ApprovalStatuChangeEvent) xstream.fromXML(content);
                     // TODO: 2020/7/1 回调信息返回调用方: mq?
                     log.info("callbackMessage: {}", JSONObject.toJSONString(callbackMessage));
-                    producer.send(RabbitQueueEnum.APPROVAL.getName(), JSONObject.toJSONString(callbackMessage));
+                    producer.send(RabbitConfig.QUEUE_APPROVAL, JSONObject.toJSONString(callbackMessage));
                 }
 
                 return "success";
@@ -158,7 +155,7 @@ public class CallBackController {
                 // 解析通讯类
                 Contact contact = (Contact) xstream.fromXML(content);
                 // TODO: 2020/7/1 回调信息返回调用方: mq?
-                producer.send(RabbitQueueEnum.CONTACT.getName(), JSONObject.toJSONString(contact));
+                producer.send(RabbitConfig.QUEUE_CONTACT, JSONObject.toJSONString(contact));
                 return "success";
             }
         } catch (Exception e) {
