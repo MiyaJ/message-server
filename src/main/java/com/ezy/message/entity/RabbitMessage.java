@@ -50,7 +50,7 @@ public class RabbitMessage implements Serializable {
     /**
      * 消息产生时间
      */
-    private LocalDateTime createTime;
+    private Long createTime;
 
     /**
      * 是否已删除: 0 false 未删除(默认); 1 true 已删除

@@ -1,5 +1,6 @@
 package com.ezy.message.controller;
 
+import cn.hutool.core.lang.UUID;
 import com.ezy.message.reception.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +34,8 @@ public class RabbitController {
 
     @GetMapping("/sendMessage")
     public Object send(String message) {
-        producer.sendMessage(message);
+        producer.sendMessage(UUID.randomUUID().toString() + System.currentTimeMillis()
+        );
         return "sucess";
     }
 }
