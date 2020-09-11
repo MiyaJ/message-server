@@ -3,6 +3,7 @@ package com.ezy.message.controller;
 import cn.hutool.http.Method;
 import com.alibaba.fastjson.JSONObject;
 import com.ezy.message.config.RabbitConfig;
+import com.ezy.message.entity.RabbitMessage;
 import com.ezy.message.model.callback.QwEvent;
 import com.ezy.message.model.callback.approval.*;
 import com.ezy.message.model.callback.contact.Contact;
@@ -10,6 +11,7 @@ import com.ezy.message.model.callback.contact.ExtAttr;
 import com.ezy.message.model.callback.contact.Item;
 import com.ezy.message.model.callback.contact.ItemText;
 import com.ezy.message.reception.Producer;
+import com.ezy.message.service.IRabbitMessageService;
 import com.ezy.message.utils.QywxCallBackUtils;
 import com.ezy.message.utils.aes.WXBizMsgCrypt;
 import com.thoughtworks.xstream.XStream;
@@ -49,6 +51,9 @@ public class CallBackController {
     private String CONTACT_SECRET;
     @Value("${qywx.corpid}")
     private String corpid;
+
+    @Autowired
+    private IRabbitMessageService rabbitMessageService;
 
     /**
      * 审批状态变更回调通知
@@ -104,9 +109,20 @@ public class CallBackController {
                             CommentUserInfo.class, Details.class, Notifyer.class, SpRecord.class,
                             ApprovalStatuChangeEvent.class});
                     ApprovalStatuChangeEvent callbackMessage = (ApprovalStatuChangeEvent) xstream.fromXML(content);
+                    Long createTime = callbackMessage.getCreateTime();
                     // TODO: 2020/7/1 回调信息返回调用方: mq?
                     log.info("callbackMessage: {}", JSONObject.toJSONString(callbackMessage));
-                    producer.send(RabbitConfig.QUEUE_APPROVAL, JSONObject.toJSONString(callbackMessage));
+                    // 消息入库
+                    RabbitMessage rabbitMessage = new RabbitMessage();
+                    rabbitMessage.setType(RabbitMessage.MESSAGE_TYPE_APPROVAL);
+                    rabbitMessage.setContent(JSONObject.toJSONString(callbackMessage));
+                    rabbitMessage.setIsSend(true);
+                    rabbitMessage.setIsConsumed(false);
+                    rabbitMessage.setCreateTime(createTime);
+                    rabbitMessage.setIsDeleted(false);
+                    rabbitMessageService.save(rabbitMessage);
+
+                    producer.send(RabbitConfig.QUEUE_APPROVAL, rabbitMessage.getId(), JSONObject.toJSONString(callbackMessage));
                 }
 
                 return "success";
@@ -153,9 +169,19 @@ public class CallBackController {
                 XStream xstream = new XStream();
                 xstream.processAnnotations(new Class[]{Contact.class, ExtAttr.class, Item.class, ItemText.class});
                 // 解析通讯类
-                Contact contact = (Contact) xstream.fromXML(content);
+                Contact callbackMessage = (Contact) xstream.fromXML(content);
+                Long createTime = callbackMessage.getCreateTime();
                 // TODO: 2020/7/1 回调信息返回调用方: mq?
-                producer.send(RabbitConfig.QUEUE_CONTACT, JSONObject.toJSONString(contact));
+                // 消息入库
+                RabbitMessage rabbitMessage = new RabbitMessage();
+                rabbitMessage.setType(RabbitMessage.MESSAGE_TYPE_CONTACT);
+                rabbitMessage.setContent(JSONObject.toJSONString(callbackMessage));
+                rabbitMessage.setIsSend(true);
+                rabbitMessage.setIsConsumed(false);
+                rabbitMessage.setCreateTime(createTime);
+                rabbitMessage.setIsDeleted(false);
+                rabbitMessageService.save(rabbitMessage);
+                producer.send(RabbitConfig.QUEUE_CONTACT, rabbitMessage.getId(), JSONObject.toJSONString(callbackMessage));
                 return "success";
             }
         } catch (Exception e) {

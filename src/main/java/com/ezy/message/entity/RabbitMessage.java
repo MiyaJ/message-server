@@ -24,6 +24,9 @@ public class RabbitMessage implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final String MESSAGE_TYPE_APPROVAL = "approval";
+    public static final String MESSAGE_TYPE_CONTACT = "contact";
+
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
@@ -41,6 +44,11 @@ public class RabbitMessage implements Serializable {
      * 消息内容
      */
     private String content;
+
+    /**
+     * 是否已发送: 0 false 未发送(默认); 1 true 已发送
+     */
+    private Boolean isSend;
 
     /**
      * 是否已消费: 0 false 未消费(默认); 1 true 已消费

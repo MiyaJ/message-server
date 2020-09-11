@@ -1,13 +1,18 @@
 package com.ezy.message.config;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ezy.message.entity.RabbitMessage;
+import com.ezy.message.service.IRabbitMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.policy.SimpleRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 
 /**
  * @author Caixiaowei
@@ -34,6 +39,9 @@ public class RabbitConfig {
     public static final String ROUTING_KEY_APPROVAL="ROUTING_KEY_APPROVAL";
     public static final String ROUTING_KEY_CONTACT="ROUTING_KEY_CONTACT";
     public static final String ROUTING_KEY_HELLO="ROUTING_KEY_HELLO";
+
+    @Autowired
+    private IRabbitMessageService rabbitMessageService;
 
     @Bean
     public Queue helloQueue() {
@@ -105,14 +113,25 @@ public class RabbitConfig {
         //设置开启Mandatory,才能触发回调函数,无论消息推送结果怎么样都强制调用回调函数
         rabbitTemplate.setMandatory(true);
 
+        // 针对网络原因导致连接断开，利用retryTemplate重连10次
+        RetryTemplate retryTemplate = new RetryTemplate();
+        retryTemplate.setRetryPolicy(new SimpleRetryPolicy(10));
+        rabbitTemplate.setRetryTemplate(retryTemplate);
+
         rabbitTemplate.setConfirmCallback(new RabbitTemplate.ConfirmCallback() {
             @Override
             public void confirm(CorrelationData correlationData, boolean ack, String cause) {
+                String id = correlationData.getId();
                 if (ack) {
                     // 发送成功
                     log.info("rabbit 发送成功 data: {}, ack:{}, cause: {}", JSONObject.toJSONString(correlationData), ack, cause);
                 } else {
-                    // 发送失败
+                    // 发送失败, 更新消息记录发送状态为: 未发送
+                    RabbitMessage rabbitMessage = new RabbitMessage();
+                    rabbitMessage.setId(Long.valueOf(id));
+                    rabbitMessage.setIsSend(false);
+                    boolean update = rabbitMessageService.updateById(rabbitMessage);
+                    log.info("send id : {}, update: {}", id, update);
                     log.info("rabbit 发送失败 data: {}, ack:{}, cause: {}", JSONObject.toJSONString(correlationData), ack, cause);
                 }
             }
@@ -121,9 +140,16 @@ public class RabbitConfig {
         rabbitTemplate.setReturnCallback(new RabbitTemplate.ReturnCallback() {
             @Override
             public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
-                // 发送回调失败
-                log.error("rabbit 回调失败 消息 message:{}, 回应码 replyCode: {}, 回应信息 replyText: {}, 交换机 exchange: {}, 路由键 routingKey: {}",
-                        message, replyCode, replyText, exchange, routingKey);
+                String id = message.getMessageProperties().getMessageId();
+
+                // 发送回调失败, 更新消息记录发送状态为: 未发送
+                RabbitMessage rabbitMessage = new RabbitMessage();
+                rabbitMessage.setId(Long.valueOf(id));
+                rabbitMessage.setIsSend(false);
+                boolean update = rabbitMessageService.updateById(rabbitMessage);
+                log.info("send id : {}, update: {}", id, update);
+                log.error("rabbit 回调失败 消息 messageId:{}, message:{}, 回应码 replyCode: {}, 回应信息 replyText: {}, 交换机 exchange: {}, 路由键 routingKey: {}",
+                        id, message, replyCode, replyText, exchange, routingKey);
             }
         });
 
