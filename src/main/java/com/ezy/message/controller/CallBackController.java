@@ -112,9 +112,11 @@ public class CallBackController {
                     Long createTime = callbackMessage.getCreateTime();
                     // TODO: 2020/7/1 回调信息返回调用方: mq?
                     log.info("callbackMessage: {}", JSONObject.toJSONString(callbackMessage));
+                    String spNo = callbackMessage.getApprovalInfo().getSpNo();
                     // 消息入库
                     RabbitMessage rabbitMessage = new RabbitMessage();
                     rabbitMessage.setType(RabbitMessage.MESSAGE_TYPE_APPROVAL);
+                    rabbitMessage.setSpNo(spNo);
                     rabbitMessage.setContent(JSONObject.toJSONString(callbackMessage));
                     rabbitMessage.setIsSend(true);
                     rabbitMessage.setIsConsumed(false);

@@ -68,7 +68,6 @@ public class Producer {
             log.error("消息写入MQ 异常, 消息id: {}", messageId);
         }
 
-
     }
 
     public void  sendMessage(String content){
