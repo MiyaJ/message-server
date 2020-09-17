@@ -16,7 +16,8 @@ import java.io.Serializable;
 public class Contact implements Serializable {
     private static final long serialVersionUID = 875529955182563340L;
 
-    /******************** 部门变更 ***************************/
+    /******************** 共有属性 ***************************/
+
     /**
      * 企业微信CorpID
      */
@@ -48,22 +49,25 @@ public class Contact implements Serializable {
     private String event;
 
     /**
-     *
+     * create_party, update_party, del_party  创建/更新/删除 部门
+     * create_user, update_user, del_user  创建/更新/删除 成员
      */
     @XStreamAlias("ChangeType")
     private String changeType;
-
-    /**
-     * 部门Id
-     */
-    @XStreamAlias("Id")
-    private String id;
 
     /**
      * 成员/部门名称
      */
     @XStreamAlias("Name")
     private String name;
+
+    /******************** 部门变更 ***************************/
+
+    /**
+     * 部门Id
+     */
+    @XStreamAlias("Id")
+    private String id;
 
     /**
      * 父部门id
