@@ -183,7 +183,7 @@ public class CallBackController {
                 rabbitMessage.setCreateTime(createTime);
                 rabbitMessage.setIsDeleted(false);
                 rabbitMessageService.save(rabbitMessage);
-                producer.send(RabbitConfig.QUEUE_CONTACT, rabbitMessage.getId(), JSONObject.toJSONString(callbackMessage));
+                producer.send(RabbitConfig.EXCHANGE_CONTACT, RabbitConfig.ROUTING_KEY_CONTACT, rabbitMessage.getId(), JSONObject.toJSONString(callbackMessage));
                 return "success";
             }
         } catch (Exception e) {

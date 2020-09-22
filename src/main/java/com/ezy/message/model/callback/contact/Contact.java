@@ -198,4 +198,7 @@ public class Contact implements Serializable {
     @XStreamAlias("ExtAttr")
     private ExtAttr extAttr;
 
+    @XStreamAlias("IsLeader")
+    private String isLeader;
+
 }

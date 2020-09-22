@@ -70,6 +70,40 @@ public class Producer {
 
     }
 
+    /**
+     * 写入mq
+     *
+     * @param exchange 交换机
+     * @param routingKey 路由key
+     * @param messageId 消息id
+     * @param content 消息内容
+     * @return
+     * @author Caixiaowei
+     * @updateTime 2020/9/22 9:36
+     */
+    public void send(String exchange, String routingKey, Long messageId, String content) {
+
+        Message message = MessageBuilder.withBody(content.getBytes())
+                .setContentType(MessageProperties.CONTENT_TYPE_JSON).setContentEncoding("utf-8")
+                .setMessageId(String.valueOf(messageId)).build();
+
+        // 构建重试confirm 内容
+        CorrelationData correlationData = new CorrelationData();
+        correlationData.setId(String.valueOf(messageId));
+        correlationData.setReturnedMessage(message);
+        try {
+            rabbitTemplate.convertAndSend(exchange, routingKey, message, correlationData);
+        } catch (Exception e) {
+            // 发送消息异常, 更新消息发送状态: 未发送
+            RabbitMessage rabbitMessage = new RabbitMessage();
+            rabbitMessage.setId(messageId);
+            rabbitMessage.setIsSend(false);
+            boolean update = rabbitMessageService.updateById(rabbitMessage);
+            log.error("消息写入MQ 异常, 消息id: {}", messageId);
+        }
+
+    }
+
     public void  sendMessage(String content){
 
         Message message = MessageBuilder.withBody(content.getBytes())
@@ -78,7 +112,6 @@ public class Producer {
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId("111");
         correlationData.setReturnedMessage(message);
-//        this.rabbitTemplate.convertAndSend(queue, message);
         rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_APPROVAL, message, correlationData);
     }
 
