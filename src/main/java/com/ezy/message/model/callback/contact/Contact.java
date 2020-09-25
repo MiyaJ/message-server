@@ -201,4 +201,10 @@ public class Contact implements Serializable {
     @XStreamAlias("IsLeader")
     private String isLeader;
 
+    /**
+     * 是否是主部门
+     */
+    @XStreamAlias("MainDepartment")
+    private Integer mainDepartment;
+
 }

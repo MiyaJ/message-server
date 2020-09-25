@@ -37,9 +37,9 @@ spring:
       datasource:
         base:
           username: root
-          password: root
+          password: qwedsa!@#
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://localhost:3306/wxwork?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
+          url: jdbc:mysql://172.16.0.10:3306/wxwork?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
       p6spy: true
 
 mybatis-plus:

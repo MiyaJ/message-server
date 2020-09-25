@@ -111,7 +111,7 @@ public class CallBackController {
                     ApprovalStatuChangeEvent callbackMessage = (ApprovalStatuChangeEvent) xstream.fromXML(content);
                     Long createTime = callbackMessage.getCreateTime();
                     // TODO: 2020/7/1 回调信息返回调用方: mq?
-                    log.info("callbackMessage: {}", JSONObject.toJSONString(callbackMessage));
+                    log.info("approval--->callbackMessage--->{}", JSONObject.toJSONString(callbackMessage));
                     String spNo = callbackMessage.getApprovalInfo().getSpNo();
                     // 消息入库
                     RabbitMessage rabbitMessage = new RabbitMessage();
@@ -172,6 +172,7 @@ public class CallBackController {
                 xstream.processAnnotations(new Class[]{Contact.class, ExtAttr.class, Item.class, ItemText.class});
                 // 解析通讯类
                 Contact callbackMessage = (Contact) xstream.fromXML(content);
+                log.info("contact--->callbackMessage--->{}", JSONObject.toJSONString(callbackMessage));
                 Long createTime = callbackMessage.getCreateTime();
                 // TODO: 2020/7/1 回调信息返回调用方: mq?
                 // 消息入库
